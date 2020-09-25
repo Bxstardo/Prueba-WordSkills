@@ -19,7 +19,7 @@
 		<section class="row mt-5">
 			<div class="card w-50 m-auto">
 				<div class="card-body w-100">
-					<form action="?controller=login&method=login" method="POST">
+					<form action="?controller=login&method=login" method="POST" id="form">
 
 						<?php
 							if(isset($error['errorMessage'])){
@@ -34,15 +34,19 @@
 
 						<div class="form-group">
 							<label>Identification Number</label>
-							<input type="text" name="Id" class="form-control" value="<?php echo isset($error['errorMessage']) ? $error['Id'] : '' ?>">
+							<input type="text" name="Id" id="Id" class="form-control" value="<?php echo isset($error['errorMessage']) ? $error['Id'] : '' ?>">
+                            <div class="invalid-feedback" id="Id-error">
+                        </div>
 						</div>
 						<div class="form-group">
 							<label>Password</label>
-							<input type="password" name="PasswordUser" class="form-control">
+							<input type="password"id="PasswordUser" name="PasswordUser" class="form-control">
+                            <div class="invalid-feedback" id="PasswordUser-error">
+                        </div>
 						</div>
 
 						<div class="form-group">
-							<button class="btn btn-primary">Log in</button>
+							<button class="btn btn-primary" id="sendL">Log in</button>
 						</div>
 					</form>
 				</div>
@@ -54,6 +58,8 @@
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/popper.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/validator.js"></script>
+    <script src="assets/js/models/login.js"></script>
 </body>
 
 </html>

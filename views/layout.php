@@ -28,13 +28,10 @@
 						<a class="nav-link" href="?controller=user">Emplooyes</a>
 					</li>
 					<li class="nav-item">				
-						<a class="nav-link" href="?controller=category">Departments</a>
-					</li>
-					<li class="nav-item">				
 						<a class="nav-link" href="?controller=login&method=logout">Logout</a>
 					</li>
-					<li class="nav-item" style="margin-left:900px">				
-						<a class="nav-link" href="?controller=login&method=logout"></a>
+					<li class="nav-item" style="margin-left:1000px">				
+						<a class="nav-link" href="#"><?php echo $_SESSION['user']->FirstName." ".$_SESSION['user']->LastName ?> (<?php echo $_SESSION['user']->Rol ?>)</a>
 					</li>
 				</ul>
 			</div>
