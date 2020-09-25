@@ -1,73 +1,102 @@
 <?php
 
 require 'models/User.php';
-require 'models/Rol.php';
+require 'models/Department.php';
 
     class UserController
     {
         private $model;
-        private $rol;
 
         public function __construct()
 		{
             $this->model = new User;
-            $this->rol = new Rol;
-        }
+            $this->department = new Department;
+		}
+		
+		
 
         public function index()
 		{
-            require 'views/layout.php';
-            $users = $this->model->getAll();
-            $roles = $this->rol->getAll();
-            require 'views/users/list.php';
+			if(isset($_SESSION['user'])){
+				require 'views/layout.php';
+				$users = $this->model->getAll();
+				$departments = $this->department->getAll();
+				require 'views/users/list.php';
+			}else{
+				require 'views/login.php';
+			}
         }
 
 		public function add()
 		{
-			$this->model->newUser($_REQUEST);	
-            $users = $this->model->getAll();		
-			echo json_encode(["msj" => "se agrego correctamente", "users" => $users]);
-			return;
+			if(isset($_SESSION['user'])){
+				$this->model->newUser($_REQUEST);	
+				$users = $this->model->getAll();		
+				echo json_encode(["msj" => "se agrego correctamente", "users" => $users]);
+				return;
+			}
 		}
         
         public function edit()
 		{
-			$id = $_REQUEST['id'];
-			$user = $this->model->getUserById($id);
-			echo json_encode(["msj" => "se trajeron los datos correctamente", "user" => $user]);	
+			if(isset($_SESSION['user'])){
+				$Id = $_REQUEST['Id'];
+				$user = $this->model->getUserById($Id);
+				echo json_encode(["msj" => "se trajeron los datos correctamente", "user" => $user]);	
+			}
 		}
 
 		public function update()
 		{
-			$this->model->editUser($_POST);
-			$users = $this->model->getAll();		
-			echo json_encode(["msj" => "se agrego correctamente", "users" => $users]);
-		}
-
-		public function delete()
-		{
-			$this->model->deleteUser($_REQUEST);
-			$users = $this->model->getAll();		
-			echo json_encode(["msj" => "se elimino correctamente", "users" => $users]);
+			if(isset($_SESSION['user'])){
+				$this->model->editUser($_POST);
+				$users = $this->model->getAll();		
+				echo json_encode(["msj" => "se agrego correctamente", "users" => $users]);
+			}
 		}
 
 		public function updateStatus()
 		{
-			$user = $this->model->getUserById($_REQUEST['id']);
-			$data = [];
-			if($user[0]->status_id == 1) { 
-				$data = [
-					'id' => $user[0]->id,
-					'status_id' => 2
-				];
-			} elseif($user[0]->status_id == 2) {
-				$data = [
-					'id' => $user[0]->id,
-					'status_id' => 1
-				];
+			if(isset($_SESSION['user'])){
+				$user = $this->model->getUserById($_REQUEST['Id']);
+				$data = [];
+				if($user[0]->StatusUser == "Active") { 
+					$data = [
+						'Id' => $user[0]->Id,
+						'StatusUser' => "Inactive"
+					];
+				} elseif($user[0]->StatusUser == "Inactive") {
+					$data = [
+						'Id' => $user[0]->Id,
+						'StatusUser' => "Active"
+					];
+				}
+				$this->model->editUser($data);
+				$users = $this->model->getAll();	
+				echo json_encode(["msj" => "se cambio estado correctamente", "users" => $users]);
 			}
-			$this->model->editStatus($data);
-			$users = $this->model->getAll();	
-			echo json_encode(["msj" => "se elimino correctamente", "users" => $users]);
+		}
+
+		
+		public function updateAccess()
+		{
+			if(isset($_SESSION['user'])){
+				$user = $this->model->getUserById($_REQUEST['Id']);
+				$data = [];
+				if($user[0]->Access == "on") { 
+					$data = [
+						'Id' => $user[0]->Id,
+						'Access' => null
+					];
+				}else {
+					$data = [
+						'Id' => $user[0]->Id,
+						'Access' => "on"
+					];
+				}
+				$this->model->editUser($data);
+				$users = $this->model->getAll();	
+				echo json_encode(["msj" => "se elimino correctamente", "users" => $users]);
+			}
 		}
     }

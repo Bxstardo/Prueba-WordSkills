@@ -7,7 +7,7 @@
 	{
 		private $driver = 'mysql';
 		private $host = 'localhost';
-		private $dbName = 'phpexercise';
+		private $dbName = 'room_911';
 		private $charset = 'utf8';
 		private $user = 'root';
 		private $password = '';

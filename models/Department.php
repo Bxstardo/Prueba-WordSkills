@@ -1,6 +1,6 @@
 <?php
 
-    class Status
+    class Department
     {
 
 		private $pdo;
@@ -17,7 +17,7 @@
         public function getAll()
 		{
 			try {
-				$strSql = "SELECT * FROM statuses";
+				$strSql = "SELECT * FROM Departments";
 				$query = $this->pdo->select($strSql);
 				return $query;
 			} catch(PDOException $e) {
@@ -25,21 +25,21 @@
 			}
 		}
 
-		public function newRol($data)
+		public function newDepartment($data)
 		{
 			try {
-				$this->pdo->insert('statuses', $data);
+				$this->pdo->insert('Departments', $data);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
 			
 		}
 
-		public function getRolById($id)
+		public function getDepartmentById($id)
 		{
 			try {
-				$strSql = 'SELECT * FROM statuses WHERE id = :id';
-				$array = ['id' => $id];
+				$strSql = 'SELECT * FROM Departments WHERE Id = :Id';
+				$array = ['Id' => $Id];
 				$query = $this->pdo->select($strSql, $array);
 				return $query;
 			} catch(PDOException $e) {
@@ -47,32 +47,22 @@
 			}
 		}
 
-		public function editRol($data)
+		public function editDepartment($data)
 		{
 			try {
-				$strWhere = 'id = '. $data['id'];
-				$this->pdo->update('statuses', $data, $strWhere);
+				$strWhere = 'Id = '. $data['Id'];
+				$this->pdo->update('Departments', $data, $strWhere);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
 		}
-		public function deleteRol($data)
+		public function deleteDepartment($data)
 		{
 			try {
-				$strWhere = 'id = '. $data['id'];
-				$this->pdo->delete('statuses', $strWhere);
+				$strWhere = 'Id = '. $data['Id'];
+				$this->pdo->delete('Departments', $strWhere);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
 		}
-
-		public function editStatus($data)
-    	{
-        	try{
-        	    $strWhere='id='.$data['id'];
-        	    $this->pdo->update('statuses',$data,$strWhere);
-        	}catch(PDOException $e){
-        	    die($e->getMessage());
-        	}
-    	}
     }

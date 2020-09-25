@@ -17,7 +17,7 @@
         public function getAll()
 		{
 			try {
-				$strSql = "SELECT u.*, s.status as status, r.name as rol FROM users u INNER JOIN statuses s ON s.id = u.status_id INNER JOIN roles r ON r.id = u.role_id";
+				$strSql = "SELECT * FROM Users where Rol = 'Emplooye'";
 				$query = $this->pdo->select($strSql);
 				return $query;
 			} catch(PDOException $e) {
@@ -28,19 +28,20 @@
 		public function newUser($data)
 		{
 			try {
-				$data['status_id'] = 1;
-				$this->pdo->insert('users', $data);
+				$data['StatusUser'] = "Active";
+				$data['Rol'] = "Emplooye";
+				$this->pdo->insert('Users', $data);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
 			
 		}
 
-		public function getUserById($id)
+		public function getUserById($Id)
 		{
 			try {
-				$strSql = 'SELECT * FROM users WHERE id = :id';
-				$array = ['id' => $id];
+				$strSql = 'SELECT * FROM Users WHERE Id = :Id AND Rol = "Emplooye" ';
+				$array = ['Id' => $Id];
 				$query = $this->pdo->select($strSql, $array);
 				return $query;
 			} catch(PDOException $e) {
@@ -51,8 +52,8 @@
 		public function editUser($data)
 		{
 			try {
-				$strWhere = 'id = '. $data['id'];
-				$this->pdo->update('users', $data, $strWhere);
+				$strWhere = 'Id = '. $data['Id'];
+				$this->pdo->update('Users', $data, $strWhere);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
@@ -60,20 +61,12 @@
 		public function deleteUser($data)
 		{
 			try {
-				$strWhere = 'id = '. $data['id'];
-				$this->pdo->delete('users', $strWhere);
+				$strWhere = 'Id = '. $data['Id'];
+				$this->pdo->delete('Users', $strWhere);
 			} catch(PDOException $e) {
 				die($e->getMessage());
 			}
 		}
 
-		public function editStatus($data)
-    	{
-        	try{
-        	    $strWhere='id='.$data['id'];
-        	    $this->pdo->update('users',$data,$strWhere);
-        	}catch(PDOException $e){
-        	    die($e->getMessage());
-        	}
-    	}
+	
     }

@@ -1,10 +1,10 @@
 <?php
 	
-    
+	session_start();
     
 	require 'providers/Database.php';
 
-	$controller = 'HomeController';
+	$controller = 'LoginController';
 
 	if(!isset($_REQUEST['controller'])) {
 		require 'controllers/'.$controller. '.php';

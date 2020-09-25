@@ -10,11 +10,12 @@
             <table class="table table-striped table-bordered dt-responsive nowrap" id="users" style="width:100%">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Correo</th>
+                        <th>EmplooyeId</th>
+                        <th>Names</th>
+                        <th>Last Names</th>
                         <th>Rol</th>
-                        <th>Estado</th>
+                        <th>Status</th>
+                        <th>Access Room_911</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -23,25 +24,38 @@
                     foreach ($users as $user):
                     ?>
                     <tr>
-                        <td><?php echo $user->id ?></td>
-                        <td><?php echo $user->name ?></td>
-                        <td><?php echo $user->email ?></td>
-                        <td><?php echo $user->rol ?></td>
-                        <td><?php echo $user->status ?></td>
+                        <td><?php echo $user->Id ?></td>
+                        <td><?php echo $user->FirstName ?></td>
+                        <td><?php echo $user->LastName ?></td>
+                        <td><?php echo $user->Rol ?></td>
                         <td>
-                            <a href="#" class="btn btn-primary" onclick="edit(<?php echo $user->id ?>)"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="btn btn-danger" onclick="del(<?php echo $user->id ?>)"><i class="fas fa-trash-alt"></i></a>
-                            <?php if($user->status_id == 1): ?>
+                            <?php if($user->StatusUser == "Active"): ?>
                                 <label class="switch">
-                                    <input type="checkbox" onclick="updateStatus(<?php echo $user->id ?>)" checked>
+                                    <input type="checkbox" onclick="updateStatus(<?php echo $user->Id ?>)" checked>
                                     <span class="slider round"></span>
                                 </label>
-                            <?php elseif($user->status_id == 2): ?>
+                            <?php elseif($user->StatusUser == "Inactive"): ?>
                                 <label class="switch">
-                                    <input type="checkbox" onclick="updateStatus(<?php echo $user->id ?>)">
+                                    <input type="checkbox" onclick="updateStatus(<?php echo $user->Id ?>)">
                                     <span class="slider round"></span>
                                 </label>
                             <?php endif ?>
+                        </td>
+                        <td>
+                            <?php if($user->Access == "on"): ?>
+                                <label class="switch">
+                                    <input type="checkbox" onclick="updateAccess(<?php echo $user->Id ?>)" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            <?php else: ?>
+                                <label class="switch">
+                                    <input type="checkbox" onclick="updateAccess(<?php echo $user->Id ?>)">
+                                    <span class="slider round"></span>
+                                </label>
+                            <?php endif ?>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-primary" onclick="edit(<?php echo $user->Id ?>)"><i class="fas fa-edit"></i></a>
                         </td>
                     </tr>
                     <?php endforeach ?>
@@ -56,41 +70,42 @@
             <div class="modal-content">
             <form id="form" novalidate>
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Información del usuario</h5>
+                    <h5 class="modal-title" id="modalLabel">User information</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Nombre</label>
-                        <input type="text" name="name" id="name" class="form-control">
-                        <div class="invalid-feedback" id="name-error">
+                        <label for="Id" id="label-id">Identification Number</label>
+                        <input type="text" name="Id" id="Id" class="form-control">
+                        <div class="invalid-feedback" id="Id-error">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="email">Correo</label>
-                        <input type="text" name="email" id="email" class="form-control">
-                        <div class="invalid-feedback" id="email-error">
+                        <label for="FirstName">Names</label>
+                        <input type="text" name="FirstName" id="FirstName" class="form-control">
+                        <div class="invalid-feedback" id="FirstName-error">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <input type="password" name="password" id="password" class="form-control">
-                        <div class="invalid-feedback" id="password-error">
+                        <label for="LastName">Last Names</label>
+                        <input type="text" name="LastName" id="LastName" class="form-control">
+                        <div class="invalid-feedback" id="LastName-error">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="role_id">Roles</label>
-                        <select name="role_id" id="role_id" class="form-control" value="">
-                            <option value="" disabled>Seleccione un rol</option>
-                            <?php foreach ($roles as $rol): ?>
-                                <option value="<?php echo $rol->id ?>"><?php echo $rol->name ?></option>
+                        <label for="DepartmentId">Departments</label>
+                        <select name="DepartmentId" id="DepartmentId" class="form-control" value="">
+                            <option value="" >Select a department</option>
+                            <?php foreach ($departments as $department): ?>
+                                <option value="<?php echo $department->Id ?>"><?php echo $department->Department ?></option>
                             <?php endforeach ?>
-                            <option value=""></option>
                         </select>
-                        <div class="invalid-feedback" id="role_id-error">
-                        </div>
+                    </div>        
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="Access" name="Access" >
+                        <label class="form-check-label" for="Access">Access to room_911</label>
                     </div>
                 </div>
                 <div class="modal-footer">

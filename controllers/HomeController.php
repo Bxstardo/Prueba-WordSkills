@@ -4,7 +4,11 @@
 	{
 		public function index() 
 		{
-            require 'views/layout.php';
-            require 'views/home.php';	
+			if(isset($_SESSION['user'])){
+				require 'views/layout.php';
+				require 'views/home.php';	
+			}else{
+				header('Location: ?controller=login');
+			}
 		}
 	}

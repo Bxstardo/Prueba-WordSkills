@@ -3,17 +3,19 @@
 var idUser 
 
 $('#add').click(function (){
-    $('#name').val("")
-    removeValidate("#name")
-    $('#email').val("")
-    removeValidate("#email")
-    $('#role_id').val("")
-    removeValidate("#role_id")
-    $('#password').val("")
-    removeValidate("#password")
-
+    $('#Id').val("")
+    removeValidate("#Id")
+    $('#FirstName').val("")
+    removeValidate("#FirstName")
+    $('#LastName').val("")
+    removeValidate("#LastName")
+    $('#DepartmentId').val("")
+    removeValidate("#DepartmentId")
+    $("#Access").prop('checked', false);
     $('#send').val("save")
     $('#send').html("Guardar")
+    $('#Id').attr('type','text')
+    $('#label-id').css('display','block')
     $('#modal').modal().show()
     
 })
@@ -23,20 +25,25 @@ function edit(id) {
         type: "POST",
         url: "?controller=user&method=edit",
         data: {
-            id : id,
+            Id : id,
         },
         success: function(response) {
             response = JSON.parse(response)
             userArray = response.user
-            $("#name").val(userArray[0].name)
-            removeValidate("#name")
-            $('#email').val(userArray[0].email)
-            removeValidate("#email")
-            $('#role_id').val(userArray[0].role_id)
-            removeValidate("#role_id")
-            $('#password').val(userArray[0].password)
-            removeValidate("#password")
-            $("#id").val(id)
+
+            $("#Id").val(userArray[0].Id)
+            removeValidate("#Id")
+            $("#FirstName").val(userArray[0].FirstName)
+            removeValidate("#FirstName")
+            $('#LastName').val(userArray[0].LastName)
+            removeValidate("#LastName")
+            $('#DepartmentId').val(userArray[0].DepartmentId)
+            removeValidate("#DepartmentId")
+            $('#Access').val(userArray[0].Access)
+            removeValidate("#Access")
+            $('#Id').attr('type','hidden')
+            $('#label-id').css('display','none')
+       
             $('#send').val('edit')
             $('#send').html('Editar')
             $('#modal').modal().show()
@@ -50,39 +57,15 @@ function edit(id) {
     });
 }
 
-function del(id) {
-    $.ajax({
-        type: "POST",
-        url: "?controller=user&method=delete",
-        data: {
-            id : id,
-        },
-        success: function(response) {
-            response = JSON.parse(response)
-            users = ""
-            usersArray = response.users
-            updateDatatable(usersArray)
-        },
-        statusCode: {
-            404: function () {
-                alert('web not found');
-            }
-        },
-    });
-}
 
 $('#send').click(function (e){
     e.preventDefault()
     //validations
     validation = true
-    if(!validateInput("#name",['required','text']))  
-        validation = false 
-    if(!validateInput("#email",['required','email']))  
-        validation = false 
-    if(!validateInput("#password",['required']))  
-        validation = false 
-    if(!validateInput("#role_id",['required']))  
-        validation = false 
+    !validateInput("#Id",['required','number']) ? validation = false : null
+    !validateInput("#FirstName",['required','text']) ? validation = false : null
+    !validateInput("#LastName",['required','text']) ? validation = false : null
+    !validateInput("#DepartmentId",['required']) ? validation = false : null
     if (!validation) {
         return
     }
@@ -106,15 +89,17 @@ $('#send').click(function (e){
             },
         });
     }else{
+        $('#Access').prop('checked') ? Access = "on" : Access = null
+
         $.ajax({
             type: "POST",
             url: "?controller=user&method=update",
             data: {
-                id : idUser,
-                name : $('#name').val(),
-                email : $('#email').val(),
-                role_id : $('#role_id').val(),
-                password : $('#password').val(),
+                Id : idUser,
+                FirstName : $('#FirstName').val(),
+                LastName : $('#LastName').val(),
+                DepartmentId : $('#DepartmentId').val(),
+                Access : Access,
             },
             success: function(response) {
                 response = JSON.parse(response)
@@ -138,7 +123,7 @@ function updateStatus(id){
         type: "POST",
         url: "?controller=user&method=updateStatus",
         data: {
-            id : id,
+            Id : id,
         },
         success: function(response) {
             response = JSON.parse(response)
@@ -154,30 +139,65 @@ function updateStatus(id){
     });
 }
 
+function updateAccess(id){
+    $.ajax({
+        type: "POST",
+        url: "?controller=user&method=updateAccess",
+        data: {
+            Id : id,
+        },
+        success: function(response) {
+            response = JSON.parse(response)
+            users = ""
+            usersArray = response.users
+            updateDatatable(usersArray)
+        },
+        statusCode: {
+            404: function () {
+                alert('web not found');
+            }
+        },
+    });
+}
+
+
 //datatable
 
 function updateDatatable(array) {
     for (let i = 0; i < array.length; i++) {
         users += "<tr>"
-        users += "<td>"+array[i].id+"</td>"
-        users += "<td>"+array[i].name+"</td>"
-        users += "<td>"+array[i].email+"</td>"
-        users += "<td>"+array[i].rol+"</td>"
-        users += "<td>"+array[i].status+"</td>"
+        users += "<td>"+array[i].Id+"</td>"
+        users += "<td>"+array[i].FirstName+"</td>"
+        users += "<td>"+array[i].LastName+"</td>"
+        users += "<td>"+array[i].Rol+"</td>"
         users += "<td>"
-        users += '<a href="#" class="btn btn-primary" onclick="edit('+array[i].id+')" style="margin-right:5px"><i class="fas fa-edit"></i></a>'
-        users += '<a href="#" class="btn btn-danger" onclick="del('+array[i].id+')"style="margin-right:5px"><i class="fas fa-trash-alt"></i></a>'
-        if (array[i].status_id == 1) {
+        if (array[i].StatusUser == "Active") {
             users += '<label class="switch">'
-            users += '<input type="checkbox" onclick="updateStatus('+array[i].id+')" checked>'
+            users += '<input type="checkbox" onclick="updateStatus('+array[i].Id+')" checked>'
             users += '<span class="slider round"></span>'
             users += ' </label>'
-        }else if (array[i].status_id == 2) {
+        }else if (array[i].StatusUser == "Inactive") {
             users += '<label class="switch">'
-            users += '<input type="checkbox" onclick="updateStatus('+array[i].id+')" >'
+            users += '<input type="checkbox" onclick="updateStatus('+array[i].Id+')" >'
             users += '<span class="slider round"></span>'
             users += ' </label>'
         } 
+        users += "</td>"
+        users += "<td>"
+        if (array[i].Access == "on") {
+            users += '<label class="switch">'
+            users += '<input type="checkbox" onclick="updateStatus('+array[i].Id+')" checked>'
+            users += '<span class="slider round"></span>'
+            users += ' </label>'
+        }else{
+            users += '<label class="switch">'
+            users += '<input type="checkbox" onclick="updateStatus('+array[i].Id+')" >'
+            users += '<span class="slider round"></span>'
+            users += ' </label>'
+        } 
+        users += "</td>"
+        users += "<td>"
+        users += '<a href="#" class="btn btn-primary" onclick="edit('+array[i].Id+')" style="margin-right:5px"><i class="fas fa-edit"></i></a>'  
         users += "</td>"
         users += "</tr>"
     }
